@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Tag;
+use App\Models\Post;
+
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -18,5 +21,20 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+
+        $tags = Tag::all();
+
+        Post::all()->each(function ($post) use ($tags) {
+            $post->tags()->attach(
+                $tags->random(rand(1, 5))->pluck("id")->toArray()
+            );
+        });
+
+        $this->call([
+            AuthorSeeder::class,
+            ProfileSeeder::class,
+            CategorySeeder::class,
+            PostFeeder::class,
+        ]);
     }
 }
